@@ -1,0 +1,26 @@
+version: '3'
+services:
+  derper:
+    image: fredliang/derper:latest
+    restart: unless-stopped
+    ports:
+      - 3478:3478/udp
+      - 3476:80
+      - 3477:443
+    volumes:
+      - /root/derp/certs:/app/certs
+    environment:
+      - DERP_CERT_MODE=manual
+      - DERP_DOMAIN=tw.tsdrp.co
+
+  app:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    network_mode: host
